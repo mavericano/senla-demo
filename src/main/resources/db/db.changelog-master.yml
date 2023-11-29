@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      runAlways: false
+      id: 20231129_001
+      author: Ivan Gavrilovich
+      changes:
+        - sqlFile:
+            path: changelog/001_initial_schema.sql
+            encoding: utf8
+            relativeToChangelogFile: true
