@@ -1,5 +1,7 @@
 package io.weather.app.dto.weather;
 
+import io.weather.app.entity.WeatherInfoEntity;
+import io.weather.app.mapper.WeatherInfoMapper;
 import java.time.Instant;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -8,12 +10,16 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class WeatherInfoDto {
     private Long id;
-    private Byte tempCelsius;
-    private Short tempFahrenheit;
+    private Double tempCelsius;
+    private Double tempFahrenheit;
     private Double windSpeedMs;
-    private Short pressureMillibars;
+    private Double pressureMillibars;
     private Byte humidity;
     private String conditionText;
     private String city;
     private Instant requestedAt;
+
+    public WeatherInfoEntity toEntity() {
+        return WeatherInfoMapper.INSTANCE.toEntity(this);
+    }
 }

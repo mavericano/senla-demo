@@ -1,4 +1,4 @@
-package io.weather.app.exception;
+package io.weather.app.exception.util;
 
 import io.weather.app.dto.error.ErrorResponseBody;
 import io.weather.app.dto.error.ErrorType;
@@ -20,15 +20,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final BindingResultParser bindingResultParser;
-
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    @ExceptionHandler(NotFoundException.class)
-//    public ErrorResponseBody handleNotFound(NotFoundException exception) {
-//        log.warn("Started handling NotFoundException");
-//        return new ErrorResponseBody()
-//                .setI18nKey(ErrorType.NOT_FOUND.getI18nKey())
-//                .setMessage(exception.getMessage());
-//    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {

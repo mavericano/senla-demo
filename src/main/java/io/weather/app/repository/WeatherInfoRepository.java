@@ -1,4 +1,4 @@
-package io.weather.app.dao;
+package io.weather.app.repository;
 
 import io.weather.app.entity.WeatherInfoEntity;
 import org.springframework.data.repository.CrudRepository;

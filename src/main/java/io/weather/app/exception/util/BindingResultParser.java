@@ -1,4 +1,4 @@
-package io.weather.app.exception;
+package io.weather.app.exception.util;
 
 import java.util.StringJoiner;
 import org.springframework.stereotype.Component;

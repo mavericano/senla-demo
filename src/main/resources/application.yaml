@@ -12,3 +12,8 @@ spring:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
     liquibase:
         change-log: classpath:db/db.changelog-master.yml
+weather:
+    api-url: http://api.weatherapi.com/v1/current.json
+    api-key: ${WEATHER_API_KEY}
+    q: Minsk
+    aqi: no

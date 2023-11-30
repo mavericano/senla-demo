@@ -1,13 +1,12 @@
 package io.weather.app;
 
-import io.weather.app.dao.WeatherInfoRepository;
-import io.weather.app.entity.WeatherInfoEntity;
-import java.time.Instant;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableRetry
+@EnableScheduling
 @SpringBootApplication
 public class Application {
 
