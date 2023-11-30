@@ -7,7 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -26,7 +26,7 @@ public class WeatherInfoEntity {
     private Byte humidity;
     private String conditionText;
     private String city;
-    private Instant requestedAt;
+    private LocalDateTime requestedAt;
 
     public WeatherInfoDto toDto() {
         return WeatherInfoMapper.INSTANCE.toDto(this);

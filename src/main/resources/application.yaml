@@ -17,3 +17,7 @@ weather:
     api-key: ${WEATHER_API_KEY}
     q: Minsk
     aqi: no
+#    TODO remove debug logging
+logging:
+    level:
+        org.springframework.web: debug

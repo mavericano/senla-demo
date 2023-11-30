@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.retry:spring-retry'
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.postgresql:postgresql'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'

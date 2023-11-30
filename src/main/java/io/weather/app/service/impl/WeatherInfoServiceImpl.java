@@ -2,15 +2,22 @@ package io.weather.app.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.weather.app.exception.IncorrectDateException;
+import io.weather.app.exception.NoWeatherDataException;
 import io.weather.app.repository.WeatherInfoRepository;
 import io.weather.app.dto.weather.AverageInfoResponse;
 import io.weather.app.dto.weather.WeatherInfoDto;
 import io.weather.app.entity.WeatherInfoEntity;
 import io.weather.app.exception.UnableToFetchException;
 import io.weather.app.service.WeatherInfoService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,9 +32,14 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class WeatherInfoServiceImpl implements WeatherInfoService {
     private final WeatherInfoRepository weatherInfoRepository;
+    private final static DecimalFormat FORMAT = new DecimalFormat("#.##");
+
+    public WeatherInfoServiceImpl(WeatherInfoRepository weatherInfoRepository) {
+        this.weatherInfoRepository = weatherInfoRepository;
+        FORMAT.setRoundingMode(RoundingMode.HALF_UP);
+    }
 
     @Value("${weather.api-url}")
     private String weatherApiUrl;
@@ -42,15 +54,35 @@ public class WeatherInfoServiceImpl implements WeatherInfoService {
     public WeatherInfoDto fetchLatest() {
         log.info("Fetching latest at {}", Instant.now());
         var entity = weatherInfoRepository.findFirstByOrderByRequestedAtDesc();
-        return entity.toDto();
+        return entity.map(WeatherInfoEntity::toDto).orElseThrow(() -> new NoWeatherDataException("There is no weather data stored in db"));
     }
 
+    //TODO test this method
     @Override
-    public AverageInfoResponse fetchAverageForPeriod(Date periodStart, Date periodEnd) {
-        //TODO implement
-        return null;
+    public AverageInfoResponse fetchAverageForPeriod(LocalDateTime periodStart, LocalDateTime periodEnd) {
+        if (periodEnd.isBefore(periodStart)){
+            log.error("The beginning date of the period ({}) should be before the ending date of the period ({})", periodStart, periodEnd);
+            throw new IncorrectDateException(String.format("The beginning date of the period (%s) should be before the ending date of the period (%s)",
+                    periodStart, periodEnd));
+        }
+        var avgFromDb = weatherInfoRepository.findAllByRequestedAtBetween(periodStart, periodEnd);
+        if (avgFromDb.getAvgTempCelsius() == null) {
+            log.error("There is no weather data between {} and {} stored in db",
+                    periodStart, periodEnd);
+            throw new NoWeatherDataException(String.format("There is no weather data between %s and %s stored in db",
+                    periodStart, periodEnd));
+        }
+
+        avgFromDb.setAvgTempCelsius(roundToTwo(avgFromDb.getAvgTempCelsius()));
+        avgFromDb.setAvgTempFahrenheit(roundToTwo(avgFromDb.getAvgTempFahrenheit()));
+        avgFromDb.setAvgWindSpeedMs(roundToTwo(avgFromDb.getAvgWindSpeedMs()));
+        avgFromDb.setAvgHumidity(roundToTwo(avgFromDb.getAvgHumidity()));
+        avgFromDb.setAvgPressureMillibars(roundToTwo(avgFromDb.getAvgPressureMillibars()));
+
+        return avgFromDb;
     }
 
+    //TODO external configuration
     @Retryable(retryFor = {UnableToFetchException.class, RestClientException.class}, maxAttempts = 2,
             backoff = @Backoff(delay = 2000))
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
@@ -98,10 +130,16 @@ public class WeatherInfoServiceImpl implements WeatherInfoService {
             .setConditionText(conditionText)
             .setWindSpeedMs(kphToMs(windKph))
             .setCity(city)
-            .setRequestedAt(Instant.now());
+            .setRequestedAt(LocalDateTime.now());
     }
 
     private double kphToMs(double kph) {
         return kph / 3.6;
+    }
+
+    private double roundToTwo(double value) {
+        BigDecimal bigDecimal = new BigDecimal(value);
+        BigDecimal roundedWithScale = bigDecimal.setScale(2, RoundingMode.HALF_UP);
+        return roundedWithScale.doubleValue();
     }
 }
