@@ -18,7 +18,3 @@ weather:
     q: Minsk
     aqi: no
     request-rate: 0 0 * * * *
-#    TODO remove debug logging
-logging:
-    level:
-        org.springframework.web: debug

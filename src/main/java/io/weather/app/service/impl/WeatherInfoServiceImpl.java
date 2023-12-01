@@ -2,23 +2,19 @@ package io.weather.app.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.weather.app.exception.IncorrectDateException;
-import io.weather.app.exception.NoWeatherDataException;
-import io.weather.app.repository.WeatherInfoRepository;
 import io.weather.app.dto.weather.AverageInfoResponse;
 import io.weather.app.dto.weather.WeatherInfoDto;
 import io.weather.app.entity.WeatherInfoEntity;
+import io.weather.app.exception.IncorrectDateException;
+import io.weather.app.exception.NoWeatherDataException;
 import io.weather.app.exception.UnableToFetchException;
+import io.weather.app.repository.WeatherInfoRepository;
 import io.weather.app.service.WeatherInfoService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -50,9 +46,6 @@ public class WeatherInfoServiceImpl implements WeatherInfoService {
     @Value("${weather.aqi}")
     private String weatherAqi;
 
-//    @Value("${weather.request-rate}")
-//    private String requestRate;
-
     @Override
     public WeatherInfoDto fetchLatest() {
         log.info("Fetching latest at {}", Instant.now());
@@ -60,7 +53,6 @@ public class WeatherInfoServiceImpl implements WeatherInfoService {
         return entity.map(WeatherInfoEntity::toDto).orElseThrow(() -> new NoWeatherDataException("There is no weather data stored in db"));
     }
 
-    //TODO test this method
     @Override
     public AverageInfoResponse fetchAverageForPeriod(LocalDateTime periodStart, LocalDateTime periodEnd) {
         if (periodEnd.isBefore(periodStart)){

@@ -2,9 +2,7 @@ package io.weather.app.repository;
 
 import io.weather.app.dto.weather.AverageInfoResponse;
 import io.weather.app.entity.WeatherInfoEntity;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
