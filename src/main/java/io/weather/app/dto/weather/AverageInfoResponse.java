@@ -1,8 +1,12 @@
 package io.weather.app.dto.weather;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@NoArgsConstructor
+@Accessors(chain = true)
 public class AverageInfoResponse {
     private Double avgTempCelsius;
     private Double avgTempFahrenheit;
