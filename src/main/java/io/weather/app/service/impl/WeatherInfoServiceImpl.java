@@ -50,6 +50,9 @@ public class WeatherInfoServiceImpl implements WeatherInfoService {
     @Value("${weather.aqi}")
     private String weatherAqi;
 
+//    @Value("${weather.request-rate}")
+//    private String requestRate;
+
     @Override
     public WeatherInfoDto fetchLatest() {
         log.info("Fetching latest at {}", Instant.now());
@@ -82,10 +85,9 @@ public class WeatherInfoServiceImpl implements WeatherInfoService {
         return avgFromDb;
     }
 
-    //TODO external configuration
     @Retryable(retryFor = {UnableToFetchException.class, RestClientException.class}, maxAttempts = 2,
             backoff = @Backoff(delay = 2000))
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
+    @Scheduled(cron = "${weather.request-rate}")
     protected void fetchWeatherInfo() {
         log.info("Fetching weather info from url {}", weatherApiUrl);
         var restTemplate = new RestTemplate();
