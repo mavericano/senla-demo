@@ -1,7 +1,7 @@
 package io.weather.app.dto.weather;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.weather.app.entity.WeatherInfoEntity;
 import io.weather.app.mapper.WeatherInfoMapper;
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ public class WeatherInfoDto {
     private Byte humidity;
     private String conditionText;
     private String city;
-    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime requestedAt;
 
     public WeatherInfoEntity toEntity() {

@@ -17,4 +17,4 @@ weather:
     api-key: ${WEATHER_API_KEY}
     q: Minsk
     aqi: no
-    request-rate: 0 0 * * * *
+    request-rate: ${WEATHER_API_REQUEST_RATE}

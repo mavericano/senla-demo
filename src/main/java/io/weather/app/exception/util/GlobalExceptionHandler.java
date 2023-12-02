@@ -27,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoWeatherDataException.class)
     public ErrorResponseBody handleNoData(NoWeatherDataException exception) {
-        log.warn("Started handling NoWeatherDataException");
+        log.info("Started handling NoWeatherDataException");
         return new ErrorResponseBody()
                 .setI18nKey(ErrorType.NO_DATA.getI18nKey())
                 .setMessage(exception.getMessage());
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IncorrectDateException.class)
     public ErrorResponseBody handleIncorrectDate(IncorrectDateException exception) {
-        log.warn("Started handling IncorrectDateException");
+        log.info("Started handling IncorrectDateException");
         return new ErrorResponseBody()
                 .setI18nKey(ErrorType.INCORRECT_DATE.getI18nKey())
                 .setMessage(exception.getMessage());
@@ -44,6 +44,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        log.info("Started handling MethodArgumentNotValidException");
         BindingResult bindingResult =  ex.getBindingResult();
         String message = "Fields of request dto has errors: " + bindingResultParser.getFieldErrMismatches(bindingResult);
         ErrorResponseBody body = new ErrorResponseBody()
@@ -55,7 +56,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponseBody handleLeftoverException(Exception exception) {
-        log.warn("Started handling leftover exception");
+        log.info("Caught exception in leftover handler", exception);
         return new ErrorResponseBody()
                 .setI18nKey(ErrorType.GENERIC_ERROR.getI18nKey())
                 .setMessage(exception.getMessage());

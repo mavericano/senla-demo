@@ -1,0 +1,33 @@
+version: '3.0'
+
+networks:
+  weather-network:
+
+services:
+  weather_db:
+    image: postgres:12.11
+    container_name: weather_db
+    environment:
+      - POSTGRES_DB=weather
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - weather-network
+  weather_service:
+    image: weather
+    container_name: weather_service
+    ports:
+      - '8080:8080'
+    depends_on:
+      - weather_db
+    environment:
+      - DB_URL=jdbc:postgresql://weather_db:5432/weather
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - WEATHER_API_KEY=384c730341ce4086b4691742233011
+      - WEATHER_API_REQUEST_RATE=0 0 * * * *
+    networks:
+      - weather-network
